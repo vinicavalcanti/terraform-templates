@@ -7,14 +7,6 @@ Parameters:
     Type: String
     Description: EKS Cluster Name
 
-  SecurityGroup:
-    Description: Security Group Id
-    Type: "List<AWS::EC2::SecurityGroup::Id>"
-
-  SubnetIDs:
-    Description: Subnet IDs
-    Type: "List<AWS::EC2::Subnet::Id>"
-
   Environment:
     Type: String
     Default: "dev"
@@ -29,6 +21,8 @@ Resources:
       RoleArn: !ImportValue eks-vc-role
       ResourcesVpcConfig:
         SecurityGroupIds: 
-          - !Ref SecurityGroup
+          - "sg-01e735987600fb036"
         SubnetIds: 
-          - !Ref SubnetIDs
+          - "subnet-02e44c62dae6d8ee4"
+          - "subnet-0549eea9a63e1f4fc"
+          - "subnet-0ca67dc7332016ce0"
