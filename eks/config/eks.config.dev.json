@@ -1,7 +1,7 @@
 {
     "Parameters": {
         "EKSName": "my-eks-cluster",
-        "SecurityGroup": [ "sg-0fa33d6fb69030517" ],
+        "SecurityGroup": ["sg-0fa33d6fb69030517"],
         "SubnetIDs" : ["subnet-02e44c62dae6d8ee4", "subnet-0549eea9a63e1f4fc", "subnet-0ca67dc7332016ce0"]
     },
     "Tags": {
