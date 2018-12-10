@@ -22,9 +22,9 @@ Resources:
         - arn:aws:iam::aws:policy/AmazonEKSClusterPolicy
         - arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryPowerUser
 
-# ********* Output section *********    
-Outputs: 
-    AWSEksClusterRole: 
+# ********* Output section *********
+Outputs:
+    AWSEksClusterRole:
       Value: !GetAtt AWSServiceRoleForAmazonEKS.Arn
       Export:
         Name: "eks-vc-role"

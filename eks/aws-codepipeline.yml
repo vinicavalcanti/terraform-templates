@@ -158,9 +158,9 @@ Resources:
 
         - Name: Dev
           Actions:
-            ## Configuracion de VPC
+            ## Deploy EKS Cluster
             - RunOrder: 1
-              Name: VPC
+              Name: EKS-Cluster
               ActionTypeId:
                 Category: Deploy
                 Owner: AWS
@@ -179,8 +179,31 @@ Resources:
                      "Environment" : "dev"
                   }
                 RoleArn: !GetAtt CFDeployerRole.Arn
+
+                ## Deploy Worker Nodes
+                - RunOrder: 2
+                  Name: EKS-WorkerNodes
+                  ActionTypeId:
+                    Category: Deploy
+                    Owner: AWS
+                    Provider: CloudFormation
+                    Version: '1'
+                  InputArtifacts:
+                    - Name: Repo
+                  Configuration:
+                    ActionMode: CREATE_UPDATE
+                    Capabilities: CAPABILITY_IAM
+                    StackName: !Sub "${AWS::StackName}-eks-workers"
+                    TemplatePath: "Repo::eks/amazon-eks-nodegroup.yml"
+                    TemplateConfiguration: "Repo::eks/config/eks.workernodes.config.dev.json"
+                    ParameterOverrides: !Sub |
+                      {
+                         "Environment" : "dev"
+                      }
+                    RoleArn: !GetAtt CFDeployerRole.Arn
+
               OutputArtifacts: []
-   
+
       ArtifactStore:
         Type: S3
         Location: !Ref CodepipelineBucket
@@ -216,7 +239,7 @@ Resources:
             Action:
              - codebuild:StartBuild
              - codebuild:BatchGetBuilds
-            Resource: 
+            Resource:
             - "*"
           -
             Effect: Allow
