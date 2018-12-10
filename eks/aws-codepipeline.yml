@@ -60,7 +60,7 @@ Resources:
                       done
                   - echo "Validating Cloudformation template"
                   - |
-                      for cfn_template in *.yaml; do
+                      for cfn_template in *.yml; do
                             echo "Validating CloudFormation template file $cfn_template"
                             aws cloudformation validate-template --template-body file://$cfn_template
                       done
@@ -99,6 +99,13 @@ Resources:
               - codebuild:*
               - cloudformation:ValidateTemplate
             Resource: "*"
+          -
+            Effect: Allow
+            Action:
+              - s3:*
+            Resource:
+              - !Sub "arn:aws:s3:::${CodepipelineBucket}"
+              - !Sub "arn:aws:s3:::${CodepipelineBucket}/*"
       Roles:
         -
           !Ref CodeBuildRole
@@ -303,6 +310,7 @@ Resources:
             Effect: Allow
             Action:
               - eks:*
+              - ec2:*
             Resource:
               - "*"
       Roles:
