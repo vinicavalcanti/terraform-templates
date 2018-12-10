@@ -1,0 +1,14 @@
+---
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Amazon EKS Service Role'
+
+Resources:
+  AWSEksCluster:
+    Type: "AWS::EKS::Cluster"
+    Properties:
+      Name: "eks-vc-teste"
+      Version: "1.10"
+      RoleArn: "arn:aws:iam::485164690107:role/eks-vc-role"
+      ResourcesVpcConfig:
+        SecurityGroupIds: ["sg-09ed96baf81113420"]
+        SubnetIds: ["subnet-046a7b945c72009f9", "subnet-08eac3141a54bc5ad", "subnet-0315a3dabd50e566b"]
