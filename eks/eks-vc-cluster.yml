@@ -3,7 +3,7 @@ AWSTemplateFormatVersion: '2010-09-09'
 Description: 'Amazon EKS Service Role'
 
 Parameters:
-  EKSName:
+  ClusterName:
     Type: String
     Description: EKS Cluster Name
 
@@ -24,7 +24,7 @@ Resources:
   AWSEksCluster:
     Type: "AWS::EKS::Cluster"
     Properties:
-      Name: !Ref EKSName
+      Name: !Ref ClusterName
       Version: "1.10"
       RoleArn: !ImportValue eks-vc-role
       ResourcesVpcConfig:
