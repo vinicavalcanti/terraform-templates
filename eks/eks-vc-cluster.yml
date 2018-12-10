@@ -3,11 +3,11 @@ AWSTemplateFormatVersion: '2010-09-09'
 Description: 'Amazon EKS Service Role'
 
 Parameters:
-  ClusterName:
+  EKSName:
     Type: String
     Description: EKS Cluster Name
 
-  SecurityGroup:
+  SecurityGroupIDs:
     Description: Security Group Id
     Type: "List<AWS::EC2::SecurityGroup::Id>"
 
@@ -15,13 +15,18 @@ Parameters:
     Description: Subnet IDs
     Type: "List<AWS::EC2::Subnet::Id>"
 
+  Environment:
+    Type: String
+    Default: "dev"
+    AllowedValues: ["dev", "stage", "prod"]
+
 Resources:
   AWSEksCluster:
     Type: "AWS::EKS::Cluster"
     Properties:
-      Name: !Ref ClusterName
+      Name: !Ref EKSName
       Version: "1.10"
       RoleArn: !ImportValue eks-vc-role
       ResourcesVpcConfig:
-        SecurityGroupIds: [!Ref SecurityGroup]
-        SubnetIds: [!Ref SubnetIDs]
+        SecurityGroupIds: !Ref SecurityGroupIDs
+        SubnetIds: !Ref SubnetIDs
