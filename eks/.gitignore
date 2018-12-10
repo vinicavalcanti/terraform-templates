@@ -1,3 +1,3 @@
-run.retry
+run.*
 log*
 DS_Store

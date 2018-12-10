@@ -171,8 +171,8 @@ Resources:
                 ActionMode: CREATE_UPDATE
                 Capabilities: CAPABILITY_IAM
                 StackName: !Sub "${AWS::StackName}-eks"
-                TemplatePath: "eks-vc-cluster.yml"
-                TemplateConfiguration: "config/eks.config.dev.json"
+                TemplatePath: "eks/eks-vc-cluster.yml"
+                TemplateConfiguration: "eks/config/eks.config.dev.json"
                 ParameterOverrides: !Sub |
                   {
                      "Environment" : "dev"
