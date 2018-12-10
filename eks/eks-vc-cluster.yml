@@ -15,6 +15,11 @@ Parameters:
     Description: Subnet IDs
     Type: "List<AWS::EC2::Subnet::Id>"
 
+  Environment:
+    Type: String
+    Default: "dev"
+    AllowedValues: ["dev", "stage", "prod"]
+
 Resources:
   AWSEksCluster:
     Type: "AWS::EKS::Cluster"

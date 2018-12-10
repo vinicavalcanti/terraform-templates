@@ -172,8 +172,8 @@ Resources:
                 ActionMode: CREATE_UPDATE
                 Capabilities: CAPABILITY_IAM
                 StackName: !Sub "${AWS::StackName}-eks"
-                TemplatePath: "eks/eks-vc-cluster.yml"
-                TemplateConfiguration: "eks/config/eks.config.dev.json"
+                TemplatePath: "Repo::eks/eks-vc-cluster.yml"
+                TemplateConfiguration: "Repo::eks/config/eks.config.dev.json"
                 ParameterOverrides: !Sub |
                   {
                      "Environment" : "dev"
@@ -314,6 +314,14 @@ Resources:
               - ec2:*
             Resource:
               - "*"
+
+          -
+            Effect: Allow
+            Action:
+              - s3:*
+            Resource:
+              - !Sub "arn:aws:s3:::${CodepipelineBucket}"
+              - !Sub "arn:aws:s3:::${CodepipelineBucket}/*"
       Roles:
         -
           !Ref CFDeployerRole
