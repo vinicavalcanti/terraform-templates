@@ -9,11 +9,11 @@ Parameters:
 
   SecurityGroupIDs:
     Description: Security Group Id
-    Type: String
+    Type: "List<AWS::EC2::SecurityGroup::Id>"
 
   SubnetIDs:
     Description: Subnet IDs
-    Type: String
+    Type: "List<AWS::EC2::Subnet::Id>"
 
   Environment:
     Type: String
