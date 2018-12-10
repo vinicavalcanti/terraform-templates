@@ -2,13 +2,26 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: 'Amazon EKS Service Role'
 
+Parameters:
+  EKSName:
+    Type: String
+    Description: EKS Cluster Name
+
+  SecurityGroup:
+    Description: Security Group Id
+    Type: "List<AWS::EC2::SecurityGroup::Id>"
+
+  SubnetIDs:
+    Description: Subnet IDs
+    Type: "List<AWS::EC2::Subnet::Id>"
+
 Resources:
   AWSEksCluster:
     Type: "AWS::EKS::Cluster"
     Properties:
-      Name: "eks-vc-teste"
+      Name: !Ref EKSName
       Version: "1.10"
-      RoleArn: "arn:aws:iam::485164690107:role/eks-vc-role"
+      RoleArn: !ImportValue eks-vc-role
       ResourcesVpcConfig:
-        SecurityGroupIds: ["sg-09ed96baf81113420"]
-        SubnetIds: ["subnet-046a7b945c72009f9", "subnet-08eac3141a54bc5ad", "subnet-0315a3dabd50e566b"]
+        SecurityGroupIds: [!Ref SecurityGroup]
+        SubnetIds: [!Ref SubnetIDs]
