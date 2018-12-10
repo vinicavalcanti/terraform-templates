@@ -1,0 +1,10 @@
+{
+    "Parameters": {
+        "EKSName": "vpc-dev",
+        "SecurityGroup": "110.0.0.0/16",
+        "SubnetIDs" : "110.0.1.0/24"
+    },
+    "Tags": {
+        "Environment": "dev"
+    }
+}
