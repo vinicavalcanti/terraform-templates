@@ -2,8 +2,8 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: 'Amazon EKS Service Role'
 
+# ********* Output section *********
 Resources:
-
   AWSServiceRoleForAmazonEKS:
     Type: AWS::IAM::Role
     Properties:
@@ -21,3 +21,10 @@ Resources:
         - arn:aws:iam::aws:policy/AmazonEKSServicePolicy
         - arn:aws:iam::aws:policy/AmazonEKSClusterPolicy
         - arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryPowerUser
+
+# ********* Output section *********    
+Outputs: 
+    AWSEksClusterRole: 
+      Value: !GetAtt AWSServiceRoleForAmazonEKS.Arn
+      Export:
+        Name: "eks-vc-role"
