@@ -115,7 +115,7 @@ Resources:
 # Pipeline: ApplicationPipeline
 # - Pipeline Multi-Stage para hacer el release management de una aplicacion
 
-  project:
+  bc:
     Type: "AWS::CodePipeline::Pipeline"
     Properties:
       RoleArn: !GetAtt PipeLineRole.Arn

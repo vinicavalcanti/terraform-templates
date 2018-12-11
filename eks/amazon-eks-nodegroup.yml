@@ -114,6 +114,11 @@ Parameters:
     Description: The subnets where workers can be created.
     Type: List<AWS::EC2::Subnet::Id>
 
+  Environment:
+    Type: String
+    Default: "dev"
+    AllowedValues: ["dev", "stage", "prod"]
+
 Metadata:
   AWS::CloudFormation::Interface:
     ParameterGroups:
