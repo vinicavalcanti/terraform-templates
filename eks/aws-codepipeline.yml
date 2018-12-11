@@ -210,7 +210,7 @@ Resources:
               OutputArtifacts: []
 
             - RunOrder: 3
-              Name: EKS-WorkerNodes-Join
+              Name: EKS-Join
               ActionTypeId:
                 Category: Deploy
                 Owner: AWS
