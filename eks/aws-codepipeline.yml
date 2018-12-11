@@ -304,11 +304,15 @@ Resources:
             Effect: Allow
             Action:
               - iam:CreateRole
+              - iam:DeleteRole
               - iam:CreatePolicy
+              - iam:DeletePolicy
               - iam:GetRole
               - iam:DeleteRole
               - iam:PutRolePolicy
               - iam:PassRole
+              - iam:AttachRolePolicy
+              - iam:DetachRolePolicy 
               - iam:DeleteRolePolicy
               - codebuild:*
             Resource: "*"
