@@ -314,6 +314,10 @@ Resources:
               - iam:AttachRolePolicy
               - iam:DetachRolePolicy 
               - iam:DeleteRolePolicy
+              - iam:CreateInstanceProfile
+              - iam:DeleteInstanceProfile
+              - iam:RemoveRoleFromInstanceProfile
+              - iam:AddRoleToInstanceProfile
               - codebuild:*
             Resource: "*"
           -
@@ -338,6 +342,7 @@ Resources:
             Action:
               - eks:*
               - ec2:*
+              - autoscaling:*
             Resource:
               - "*"
 
