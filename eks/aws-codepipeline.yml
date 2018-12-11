@@ -152,7 +152,7 @@ Resources:
               InputArtifacts:
                 - Name: Repo
               ActionTypeId:
-                Category: Build
+                Category: Test
                 Owner: AWS
                 Version: 1
                 Provider: CodeBuild
@@ -185,7 +185,7 @@ Resources:
                   }
                 RoleArn: !GetAtt CFDeployerRole.Arn
 
-                ## Deploy Worker Nodes
+            ## Deploy Worker Nodes
             - RunOrder: 2
               Name: EKS-WorkerNodes
               ActionTypeId:
@@ -210,24 +210,16 @@ Resources:
               OutputArtifacts: []
 
             - RunOrder: 3
-              Name: EKS-Join
-              ActionTypeId:
-                Category: Deploy
-                Owner: AWS
-                Provider: CloudFormation
-                Version: '1'
+              Name: "WorkerJoin"
               InputArtifacts:
                 - Name: Repo
+              ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Version: 1
+                Provider: CodeBuild
               Configuration:
-                ActionMode: CREATE_UPDATE
-                Capabilities: CAPABILITY_IAM
-                StackName: !Sub "${AWS::StackName}-eks-workers"
-                TemplatePath: "Repo::eks/codebuild-config-map.yml"
-                ParameterOverrides: !Sub |
-                  {
-                     "ClusterName" : "${ClusterName}"
-                  }
-                RoleArn: !GetAtt CFDeployerRole.Arn
+                ProjectName: !Sub codebuild-worker-join
               OutputArtifacts: []
 
       ArtifactStore:
