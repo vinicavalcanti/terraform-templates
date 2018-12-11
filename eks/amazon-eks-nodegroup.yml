@@ -321,7 +321,7 @@ Resources:
       ServiceRole: !GetAtt CodeBuildServiceRole.Arn
       Source:
         BuildSpec: !Sub |
-            version: 0.2
+            version: 0.1
             phases:
               install:
                 commands:
@@ -334,8 +334,22 @@ Resources:
               pre_build:
                 commands:
                   - echo "Creating ConfigMap"
-                  - ROLE="    - rolearn: $EKS_KUBECTL_ROLE_ARN\nusername: build\n      groups:\n        - system:masters"
-                  - echo $ROLE
+                  - | 
+                      cat > /tmp/aws-auth-patch.yml << EOL
+                        apiVersion: v1
+                        kind: ConfigMap
+                        metadata:
+                          name: aws-auth
+                          namespace: kube-system
+                        data:
+                          mapRoles: |
+                            - rolearn: $EKS_KUBECTL_ROLE_ARN
+                              username: system:node:{{EC2PrivateDNSName}}
+                              groups:
+                                - system:bootstrappers
+                                - system:nodes
+                      EOL
+                  - cat /tmp/aws-auth-patch.yml
                 build:
                   commands:
                     - CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o main .
@@ -347,7 +361,6 @@ Resources:
                     - export AWS_SESSION_TOKEN="$(echo $CREDENTIALS | jq -r '.Credentials.SessionToken')"
                     - export AWS_EXPIRATION=$(echo $CREDENTIALS | jq -r '.Credentials.Expiration')
                     - aws eks update-kubeconfig --name $EKS_CLUSTER_NAME
-                    - kubectl get -n kube-system configmap/aws-auth -o yaml | awk "/mapRoles: \|/{print;print \"$ROLE\";next}1" > /tmp/aws-auth-patch.yml
                     - cat /tmp/aws-auth-patch.yml
                     - kubectl patch configmap/aws-auth -n kube-system --patch "$(cat /tmp/aws-auth-patch.yml)"
         Type: CODEPIPELINE
