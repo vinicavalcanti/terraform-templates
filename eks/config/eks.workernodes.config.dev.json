@@ -10,7 +10,7 @@
         "NodeGroupName": "my-nodegroup-cluster",
         "ClusterControlPlaneSecurityGroup": "sg-01e735987600fb036",
         "VpcId": "vpc-018ba7f311411f2bc",
-        "Subnets": "subnet-02e44c62dae6d8ee4,subnet-0549eea9a63e1f4fc,subnet-0ca67dc7332016ce0",
+        "Subnets": "subnet-02e44c62dae6d8ee4,subnet-0549eea9a63e1f4fc",
         "Environment": "dev"
     },
     "Tags": {
