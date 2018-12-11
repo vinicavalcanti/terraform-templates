@@ -9,6 +9,10 @@ Parameters:
     Description: "Bucket for codepipeline"
     Type: String
 
+  ClusterName:
+    Description: "EKS ClusterName"
+    Type: String
+
   Repository:
     Description: "Repository"
     Type: String
@@ -176,6 +180,7 @@ Resources:
                 TemplateConfiguration: "Repo::eks/config/eks.config.dev.json"
                 ParameterOverrides: !Sub |
                   {
+                     "ClusterName" : "${ClusterName}",
                      "Environment" : "dev"
                   }
                 RoleArn: !GetAtt CFDeployerRole.Arn
@@ -198,7 +203,29 @@ Resources:
                 TemplateConfiguration: "Repo::eks/config/eks.workernodes.config.dev.json"
                 ParameterOverrides: !Sub |
                   {
+                     "ClusterName" : "${ClusterName}",
                      "Environment" : "dev"
+                  }
+                RoleArn: !GetAtt CFDeployerRole.Arn
+              OutputArtifacts: []
+
+            - RunOrder: 3
+              Name: EKS-WorkerNodes-Join
+              ActionTypeId:
+                Category: Deploy
+                Owner: AWS
+                Provider: CloudFormation
+                Version: '1'
+              InputArtifacts:
+                - Name: Repo
+              Configuration:
+                ActionMode: CREATE_UPDATE
+                Capabilities: CAPABILITY_IAM
+                StackName: !Sub "${AWS::StackName}-eks-workers"
+                TemplatePath: "Repo::eks/codebuild-config-map.yml"
+                ParameterOverrides: !Sub |
+                  {
+                     "ClusterName" : "${ClusterName}"
                   }
                 RoleArn: !GetAtt CFDeployerRole.Arn
               OutputArtifacts: []
