@@ -335,9 +335,6 @@ Resources:
                   - apt-get update && apt-get -y install jq golang python3-pip python3-dev && pip3 install --upgrade awscli
               build:
                 commands:
-                  - CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o main .
-              post_build:
-                commands:
                   - CREDENTIALS=$(aws sts assume-role --role-arn $EKS_KUBECTL_ROLE_ARN --role-session-name codebuild-kubectl --duration-seconds 900)
                   - export AWS_ACCESS_KEY_ID="$(echo $CREDENTIALS | jq -r '.Credentials.AccessKeyId')"
                   - export AWS_SECRET_ACCESS_KEY="$(echo $CREDENTIALS | jq -r '.Credentials.SecretAccessKey')"
@@ -367,9 +364,9 @@ Resources:
               - Effect: Allow
                 Action:
                   - sts:AssumeRole
-                Resource: 
-                  Fn::ImportValue: 
-                    !Sub "${ClusterName}-master-role"
+                Resource: "*"
+#                  Fn::ImportValue: 
+#                    !Sub "${ClusterName}-master-role"
 
               - Resource: '*'
                 Effect: Allow
