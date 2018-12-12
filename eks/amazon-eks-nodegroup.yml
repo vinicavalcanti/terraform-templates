@@ -315,6 +315,8 @@ Resources:
         EnvironmentVariables:
           - Name: EKS_CLUSTER_NAME
             Value: !Ref ClusterName
+          - Name: EKS_WORKER_ROLE_ARN
+            Value: !GetAtt NodeInstanceRole.Arn
           - Name: EKS_KUBECTL_ROLE_ARN
             Value: 
               Fn::ImportValue: 
@@ -337,23 +339,35 @@ Resources:
               build:
                 commands:
                   - echo $EKS_KUBECTL_ROLE_ARN
-                  - aws sts get-caller-identity
-                  - aws sts assume-role --role-arn $EKS_KUBECTL_ROLE_ARN --role-session-name codebuild-kubectl --duration-seconds 900
                   - CREDS=$(aws sts assume-role --role-arn $EKS_KUBECTL_ROLE_ARN --role-session-name codebuild-kubectl --duration-seconds 900)
-                  - echo $CREDS
                   - export AWS_ACCESS_KEY_ID="$(echo $CREDS | jq -r '.Credentials.AccessKeyId')"
                   - export AWS_SECRET_ACCESS_KEY="$(echo $CREDS | jq -r '.Credentials.SecretAccessKey')"
                   - export AWS_SESSION_TOKEN="$(echo $CREDS | jq -r '.Credentials.SessionToken')"
                   - export AWS_EXPIRATION=$(echo $CREDS | jq -r '.Credentials.Expiration')
-                  - aws sts get-caller-identity
                   - aws eks update-kubeconfig --name $EKS_CLUSTER_NAME
-                  - echo $AWS_ACCESS_KEY_ID
-                  - echo $AWS_SECRET_ACCESS_KEY
-                  - echo $AWS_SESSION_TOKEN
-                  - echo $AWS_EXPIRATION
-                  - aws sts get-caller-identity
+
+              postbuild:
+                  commands:
                   - kubectl get svc
                   - kubectl get nodes
+                  - cat > /tmp/awsauth-cm.yml <<EOL
+                    apiVersion: v1
+                    kind: ConfigMap
+                    metadata:
+                      name: aws-auth
+                      namespace: kube-system
+                    data:
+                      mapRoles: |
+                        - rolearn: $EKS_WORKER_ROLE_ARN
+                          username: system:node:{{EC2PrivateDNSName}}
+                          groups:
+                            - system:bootstrappers
+                            - system:nodes
+                    EOL
+                  - cat /tmp/awsauth-cm.yml
+                  - kubectl apply -f /tmp/awsauth-cm.yml
+                  - kubectl get nodes
+
         Type: CODEPIPELINE
 
   CodeBuildServiceRole:
