@@ -7,7 +7,6 @@
         "NodeAutoScalingGroupMaxSize": "3",
         "NodeVolumeSize": "20",
         "NodeGroupName": "nodegroup-cluster",
-        "ClusterControlPlaneSecurityGroup": "sg-01e735987600fb036",
         "VpcId": "vpc-0ba32be7821fd7442",
         "Subnets": "subnet-03f0e4eeb43920df5,subnet-0cf56ccfde3685ac6,subnet-0b6a52756b5698185",
         "Environment": "dev"
