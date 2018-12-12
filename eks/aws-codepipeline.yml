@@ -42,7 +42,7 @@ Resources:
         ComputeType: BUILD_GENERAL1_SMALL
         Image: aws/codebuild/nodejs:7.0.0
         Type: LINUX_CONTAINER
-      Name: "codebuild-validate"
+      Name: !Sub "${AWS::StackName}-codebuild-validate"
       ServiceRole: !Ref CodeBuildRole
       Source:
         BuildSpec: !Sub |
@@ -157,7 +157,7 @@ Resources:
                 Version: 1
                 Provider: CodeBuild
               Configuration:
-                ProjectName: "codebuild-validate"
+                ProjectName: !Sub "${AWS::StackName}-codebuild-validate"
               OutputArtifacts: []
 
         - Name: Dev
@@ -175,7 +175,7 @@ Resources:
               Configuration:
                 ActionMode: CREATE_UPDATE
                 Capabilities: CAPABILITY_IAM
-                StackName: !Sub "${AWS::StackName}-eks"
+                StackName: !Sub "${AWS::StackName}-cluster"
                 TemplatePath: "Repo::eks/eks-vc-cluster.yml"
                 TemplateConfiguration: "Repo::eks/config/eks.config.dev.json"
                 ParameterOverrides: !Sub |
@@ -198,7 +198,7 @@ Resources:
               Configuration:
                 ActionMode: CREATE_UPDATE
                 Capabilities: CAPABILITY_IAM
-                StackName: !Sub "${AWS::StackName}-eks-workers"
+                StackName: !Sub "${AWS::StackName}-workers"
                 TemplatePath: "Repo::eks/amazon-eks-nodegroup.yml"
                 TemplateConfiguration: "Repo::eks/config/eks.workernodes.config.dev.json"
                 ParameterOverrides: !Sub |
@@ -295,7 +295,6 @@ Resources:
               - !Sub "arn:aws:s3:::${CodepipelineBucket}/*"
       Roles:
         - !Ref PipeLineRole
-
 
   CFDeployerRole:
     Type: AWS::IAM::Role
