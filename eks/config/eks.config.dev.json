@@ -2,7 +2,7 @@
     "Parameters": {
         "ClusterName": "eks-cluster-bc",
         "SecurityGroupIDs": "sg-01e735987600fb036",
-        "SubnetIDs" : "subnet-02e44c62dae6d8ee4,subnet-0549eea9a63e1f4fc,subnet-0ca67dc7332016ce0"
+        "SubnetIDs" : "subnet-02e44c62dae6d8ee4,subnet-0549eea9a63e1f4fc"
     },
     "Tags": {
         "Environment": "dev"

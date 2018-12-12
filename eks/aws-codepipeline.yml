@@ -308,6 +308,7 @@ Resources:
             Principal:
               Service:
                 - cloudformation.amazonaws.com
+                - codebuild.amazonaws.com
             Action:
               - sts:AssumeRole
       Path: /
@@ -364,7 +365,6 @@ Resources:
               - autoscaling:*
             Resource:
               - "*"
-
           -
             Effect: Allow
             Action:
@@ -375,3 +375,9 @@ Resources:
       Roles:
         -
           !Ref CFDeployerRole
+
+Outputs:
+    CFDeployerRole:
+      Value: !GetAtt CFDeployerRole.Arn
+      Export:
+        Name: !Sub "${ClusterName}-master-role"

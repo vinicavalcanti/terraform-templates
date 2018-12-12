@@ -316,7 +316,9 @@ Resources:
           - Name: EKS_CLUSTER_NAME
             Value: !Ref ClusterName
           - Name: EKS_KUBECTL_ROLE_ARN
-            Value: !Sub arn:aws:iam::${AWS::AccountId}:role/${KubectlRoleName}
+            Value: 
+              Fn::ImportValue: 
+                !Sub "${ClusterName}-master-role"
       Name: !Sub "codebuild-worker-join"
       ServiceRole: !GetAtt CodeBuildServiceRole.Arn
       Source:
@@ -331,25 +333,6 @@ Resources:
                   - chmod +x ./bin/kubectl ./bin/aws-iam-authenticator
                   - export PATH=$PWD/bin:$PATH
                   - apt-get update && apt-get -y install jq golang python3-pip python3-dev && pip3 install --upgrade awscli
-              pre_build:
-                commands:
-                  - echo "Creating ConfigMap"
-                  - | 
-                      cat > /tmp/aws-auth-patch.yml << EOL
-                        apiVersion: v1
-                        kind: ConfigMap
-                        metadata:
-                          name: aws-auth
-                          namespace: kube-system
-                        data:
-                          mapRoles: |
-                            - rolearn: $EKS_KUBECTL_ROLE_ARN
-                              username: system:node:{{EC2PrivateDNSName}}
-                              groups:
-                                - system:bootstrappers
-                                - system:nodes
-                      EOL
-                  - cat /tmp/aws-auth-patch.yml
                 build:
                   commands:
                     - CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o main .
@@ -361,31 +344,9 @@ Resources:
                     - export AWS_SESSION_TOKEN="$(echo $CREDENTIALS | jq -r '.Credentials.SessionToken')"
                     - export AWS_EXPIRATION=$(echo $CREDENTIALS | jq -r '.Credentials.Expiration')
                     - aws eks update-kubeconfig --name $EKS_CLUSTER_NAME
-                    - cat /tmp/aws-auth-patch.yml
-                    - kubectl patch configmap/aws-auth -n kube-system --patch "$(cat /tmp/aws-auth-patch.yml)"
+                    - kubectl get svc
+                    - kubectl get nodes
         Type: CODEPIPELINE
-
-  KubectlRoleName:
-    Type: AWS::IAM::Role
-    Properties:
-      AssumeRolePolicyDocument:
-        Version: '2012-10-17'
-        Statement:
-        - Effect: Allow
-          Principal:
-            AWS:
-            - !Sub arn:aws:iam::${AWS::AccountId}:root
-          Action:
-          - sts:AssumeRole
-      Policies:
-        - PolicyName: codebuild-kubectl-policy
-          PolicyDocument:
-            Version: 2012-10-17
-            Statement:
-              - Effect: Allow
-                Action:
-                  - eks:Describe*
-                Resource: "*"
 
   CodeBuildServiceRole:
     Type: AWS::IAM::Role
@@ -403,20 +364,25 @@ Resources:
           PolicyDocument:
             Version: 2012-10-17
             Statement:
-              - Resource: !Sub arn:aws:iam::${AWS::AccountId}:role/${KubectlRoleName}
-                Effect: Allow
+              - Effect: Allow
                 Action:
                   - sts:AssumeRole
+                Resource: 
+                  Fn::ImportValue: 
+                    !Sub "${ClusterName}-master-role"
+
               - Resource: '*'
                 Effect: Allow
                 Action:
                   - eks:Describe*
+
               - Resource: '*'
                 Effect: Allow
                 Action:
                   - logs:CreateLogGroup
                   - logs:CreateLogStream
                   - logs:PutLogEvents
+
               - Resource: '*'
                 Effect: Allow
                 Action:
@@ -428,6 +394,7 @@ Resources:
                   - ec2:DescribeSecurityGroups
                   - ec2:DescribeVpcs
                   - ec2:CreateNetworkInterfacePermission
+
               - Resource: "*"
                 Effect: Allow
                 Action:
