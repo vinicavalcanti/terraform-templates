@@ -329,7 +329,6 @@ Resources:
                 commands:
                   - pwd
                   - mkdir /tmp/bin
-                  - curl -o /tmp/bin/aws-iam-authenticator https://amazon-eks.s3-us-west-2.amazonaws.com/1.10.11/2018-07-26/bin/linux/amd64/aws-iam-authenticator
                   - curl -sS -o /tmp/bin/kubectl https://amazon-eks.s3-us-west-2.amazonaws.com/1.10.3/2018-07-26/bin/linux/amd64/kubectl
                   - chmod +x /tmp/bin/kubectl /tmp/bin/aws-iam-authenticator
                   - export PATH=/tmp/bin:$PATH
@@ -338,6 +337,11 @@ Resources:
                 pre_build:
                   commands:
                     - export KUBECONFIG=$HOME/.kube/config
+                    - which go
+                    - go get -u -v github.com/kubernetes-sigs/aws-iam-authenticator/cmd/aws-iam-authenticator
+                    - echo $GOPATH
+                    - mv $GOPATH/bin/aws-iam-authenticator /tmp/bin
+                    - ls -lh /tmp/bin
               build:
                 commands:
                   - echo $EKS_KUBECTL_ROLE_ARN
@@ -350,7 +354,6 @@ Resources:
                   - export AWS_EXPIRATION=$(echo $CREDENTIALS | jq -r '.Credentials.Expiration')
                   - aws sts get-caller-identity
                   - aws eks update-kubeconfig --name $EKS_CLUSTER_NAME
-                  - which aws-iam-authenticator
                   - echo $PATH
                   - /tmp/bin/kubectl get svc
                   - /tmp/bin/kubectl get nodes
