@@ -7,10 +7,6 @@ Parameters:
     Type: String
     Description: EKS Cluster Name
 
-  SecurityGroupIDs:
-    Description: Security Group Id
-    Type: "List<AWS::EC2::SecurityGroup::Id>"
-
   SubnetIDs:
     Description: Subnet IDs
     Type: "List<AWS::EC2::Subnet::Id>"
@@ -41,3 +37,10 @@ Resources:
     Properties:
       GroupDescription: Cluster communication with worker nodes
       VpcId: !Ref VpcId
+
+# ********* Output section *********
+Outputs:
+    ControlSecurityId:
+      Value: !GetAtt ControlPlaneSecurityGroup.GroupId
+      Export:
+        Name: !Sub "${ClusterName}-cluster-sg"
