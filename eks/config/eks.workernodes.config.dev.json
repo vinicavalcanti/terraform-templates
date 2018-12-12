@@ -6,7 +6,6 @@
         "NodeAutoScalingGroupMinSize": "1",
         "NodeAutoScalingGroupMaxSize": "3",
         "NodeVolumeSize": "20",
-        "ClusterName": "eks-cluster-bc",
         "NodeGroupName": "my-nodegroup-cluster",
         "ClusterControlPlaneSecurityGroup": "sg-01e735987600fb036",
         "VpcId": "vpc-018ba7f311411f2bc",
