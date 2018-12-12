@@ -346,6 +346,11 @@ Resources:
                   - export AWS_EXPIRATION=$(echo $CREDENTIALS | jq -r '.Credentials.Expiration')
                   - aws sts get-caller-identity
                   - aws eks update-kubeconfig --name $EKS_CLUSTER_NAME
+                  - echo $AWS_ACCESS_KEY_ID
+                  - echo $AWS_SECRET_ACCESS_KEY
+                  - echo $AWS_SESSION_TOKEN
+                  - echo $AWS_EXPIRATION
+                  - aws sts get-caller-identity
                   - kubectl get svc
                   - kubectl get nodes
         Type: CODEPIPELINE
