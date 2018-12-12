@@ -330,15 +330,11 @@ Resources:
                   - pwd
                   - mkdir /tmp/bin
                   - curl -sS -o /tmp/bin/kubectl https://amazon-eks.s3-us-west-2.amazonaws.com/1.10.3/2018-07-26/bin/linux/amd64/kubectl
+                  - curl -o /tmp/bin/aws-iam-authenticator https://amazon-eks.s3-us-west-2.amazonaws.com/1.10.3/2018-07-26/bin/linux/amd64/aws-iam-authenticator
                   - export PATH=/tmp/bin:$PATH
-                  - ls -l /tmp/bin
+                  - ls -lh /tmp/bin
                   - apt-get update && apt-get -y install jq golang python3-pip python3-dev && pip3 install --upgrade awscli
                   - export KUBECONFIG=$HOME/.kube/config
-                  - which go
-                  - echo $GOPATH
-                  - go get -u -v github.com/kubernetes-sigs/aws-iam-authenticator/cmd/aws-iam-authenticator
-                  - mv $GOPATH/bin/aws-iam-authenticator /tmp/bin
-                  - ls -lh /tmp/bin
                   - chmod +x /tmp/bin/kubectl /tmp/bin/aws-iam-authenticator
               build:
                 commands:
