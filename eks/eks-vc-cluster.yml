@@ -20,6 +20,10 @@ Parameters:
     Default: "dev"
     AllowedValues: ["dev", "stage", "prod"]
 
+  VpcId:
+    Description: The VPC of the worker instances
+    Type: AWS::EC2::VPC::Id
+
 Resources:
   AWSEksCluster:
     Type: "AWS::EKS::Cluster"
@@ -28,5 +32,11 @@ Resources:
       Version: "1.10"
       RoleArn: !ImportValue eks-vc-role
       ResourcesVpcConfig:
-        SecurityGroupIds: !Ref SecurityGroupIDs
+        SecurityGroupIds: !Ref ControlPlaneSecurityGroup
         SubnetIds: !Ref SubnetIDs
+
+  ControlPlaneSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Cluster communication with worker nodes
+      VpcId: !Ref VpcId
