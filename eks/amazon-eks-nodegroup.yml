@@ -333,12 +333,10 @@ Resources:
                   - export PATH=/tmp/bin:$PATH
                   - ls -l /tmp/bin
                   - apt-get update && apt-get -y install jq golang python3-pip python3-dev && pip3 install --upgrade awscli
-              pre_build:
-                commands:
                   - export KUBECONFIG=$HOME/.kube/config
                   - which go
-                  - go get -u -v github.com/kubernetes-sigs/aws-iam-authenticator/cmd/aws-iam-authenticator
                   - echo $GOPATH
+                  - go get -u -v github.com/kubernetes-sigs/aws-iam-authenticator/cmd/aws-iam-authenticator
                   - mv $GOPATH/bin/aws-iam-authenticator /tmp/bin
                   - ls -lh /tmp/bin
                   - chmod +x /tmp/bin/kubectl /tmp/bin/aws-iam-authenticator
