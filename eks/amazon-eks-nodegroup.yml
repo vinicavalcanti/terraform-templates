@@ -346,7 +346,7 @@ Resources:
                   - export AWS_EXPIRATION=$(echo $CREDS | jq -r '.Credentials.Expiration')
                   - aws eks update-kubeconfig --name $EKS_CLUSTER_NAME
 
-              postbuild:
+              post_build:
                   commands:
                   - kubectl get svc
                   - kubectl get nodes
