@@ -336,6 +336,7 @@ Resources:
               build:
                 commands:
                   - echo $EKS_KUBECTL_ROLE_ARN
+                  - aws sts get-caller-identity
                   - CREDENTIALS=$(aws sts assume-role --role-arn $EKS_KUBECTL_ROLE_ARN --role-session-name codebuild-kubectl --duration-seconds 900)
                   - export AWS_ACCESS_KEY_ID="$(echo $CREDENTIALS | jq -r '.Credentials.AccessKeyId')"
                   - export AWS_SECRET_ACCESS_KEY="$(echo $CREDENTIALS | jq -r '.Credentials.SecretAccessKey')"
@@ -364,10 +365,8 @@ Resources:
             Statement:
               - Effect: Allow
                 Action:
-                  - sts:AssumeRole
+                  - sts:*
                 Resource: "*"
-#                  Fn::ImportValue: 
-#                    !Sub "${ClusterName}-master-role"
 
               - Resource: '*'
                 Effect: Allow
