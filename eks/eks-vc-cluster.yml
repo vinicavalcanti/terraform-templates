@@ -32,7 +32,8 @@ Resources:
       Version: "1.10"
       RoleArn: !ImportValue eks-vc-role
       ResourcesVpcConfig:
-        SecurityGroupIds: !Ref ControlPlaneSecurityGroup
+        SecurityGroupIds: 
+        - !Ref ControlPlaneSecurityGroup
         SubnetIds: !Ref SubnetIDs
 
   ControlPlaneSecurityGroup:
