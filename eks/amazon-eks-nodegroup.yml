@@ -328,20 +328,15 @@ Resources:
               install:
                 commands:
                   - pwd
-                  - mkdir /tmp/bin
-                  - curl -sS -o /tmp/bin/kubectl https://amazon-eks.s3-us-west-2.amazonaws.com/1.10.3/2018-07-26/bin/linux/amd64/kubectl
-                  - curl -o /tmp/bin/aws-iam-authenticator https://amazon-eks.s3-us-west-2.amazonaws.com/1.10.3/2018-07-26/bin/linux/amd64/aws-iam-authenticator
-                  - echo $PATH
-                  - export PATH=$PATH:/tmp/bin
-                  - echo $PATH
-                  - ls -lh /tmp/bin
+                  - curl -sS -o /usr/local/bin/kubectl https://amazon-eks.s3-us-west-2.amazonaws.com/1.10.3/2018-07-26/bin/linux/amd64/kubectl
+                  - curl -o /usr/local/bin/aws-iam-authenticator https://amazon-eks.s3-us-west-2.amazonaws.com/1.10.3/2018-07-26/bin/linux/amd64/aws-iam-authenticator
+                  - ls -lh /usr/local/bin/
                   - apt-get update && apt-get -y install jq golang python3-pip python3-dev && pip3 install --upgrade awscli
                   - export KUBECONFIG=$HOME/.kube/config
-                  - chmod +x /tmp/bin/kubectl /tmp/bin/aws-iam-authenticator
+                  - chmod +x /usr/local/bin/kubectl /usr/local/bin/aws-iam-authenticator
               build:
                 commands:
                   - echo $EKS_KUBECTL_ROLE_ARN
-                  - export PATH=$PATH:/tmp/bin
                   - aws sts get-caller-identity
                   - aws sts assume-role --role-arn $EKS_KUBECTL_ROLE_ARN --role-session-name codebuild-kubectl --duration-seconds 900
                   - CREDENTIALS=$(aws sts assume-role --role-arn $EKS_KUBECTL_ROLE_ARN --role-session-name codebuild-kubectl --duration-seconds 900)
@@ -351,9 +346,8 @@ Resources:
                   - export AWS_EXPIRATION=$(echo $CREDENTIALS | jq -r '.Credentials.Expiration')
                   - aws sts get-caller-identity
                   - aws eks update-kubeconfig --name $EKS_CLUSTER_NAME
-                  - echo $PATH
-                  - /tmp/bin/kubectl get svc
-                  - /tmp/bin/kubectl get nodes
+                  - kubectl get svc
+                  - kubectl get nodes
         Type: CODEPIPELINE
 
   CodeBuildServiceRole:
