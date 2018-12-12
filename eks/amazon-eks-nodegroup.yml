@@ -330,7 +330,6 @@ Resources:
                   - pwd
                   - mkdir /tmp/bin
                   - curl -sS -o /tmp/bin/kubectl https://amazon-eks.s3-us-west-2.amazonaws.com/1.10.3/2018-07-26/bin/linux/amd64/kubectl
-                  - chmod +x /tmp/bin/kubectl /tmp/bin/aws-iam-authenticator
                   - export PATH=/tmp/bin:$PATH
                   - ls -l /tmp/bin
                   - apt-get update && apt-get -y install jq golang python3-pip python3-dev && pip3 install --upgrade awscli
@@ -342,6 +341,7 @@ Resources:
                     - echo $GOPATH
                     - mv $GOPATH/bin/aws-iam-authenticator /tmp/bin
                     - ls -lh /tmp/bin
+                    - chmod +x /tmp/bin/kubectl /tmp/bin/aws-iam-authenticator
               build:
                 commands:
                   - echo $EKS_KUBECTL_ROLE_ARN
