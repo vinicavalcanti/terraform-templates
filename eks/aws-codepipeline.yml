@@ -144,21 +144,21 @@ Resources:
                 - Name: Repo
 
         ## Stage de prueba de los templates
-        -
-          Name: Test
-          Actions:
-            - RunOrder: 1
-              Name: "Test_files"
-              InputArtifacts:
-                - Name: Repo
-              ActionTypeId:
-                Category: Test
-                Owner: AWS
-                Version: 1
-                Provider: CodeBuild
-              Configuration:
-                ProjectName: !Sub "${AWS::StackName}-codebuild-validate"
-              OutputArtifacts: []
+        # -
+        #   Name: Test
+        #   Actions:
+        #     - RunOrder: 1
+        #       Name: "Test_files"
+        #       InputArtifacts:
+        #         - Name: Repo
+        #       ActionTypeId:
+        #         Category: Test
+        #         Owner: AWS
+        #         Version: 1
+        #         Provider: CodeBuild
+        #       Configuration:
+        #         ProjectName: !Sub "${AWS::StackName}-codebuild-validate"
+        #       OutputArtifacts: []
 
         - Name: Dev
           Actions:
