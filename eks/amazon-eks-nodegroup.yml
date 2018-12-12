@@ -332,7 +332,7 @@ Resources:
                   - curl -sS -o /tmp/bin/aws-iam-authenticator https://amazon-eks.s3-us-west-2.amazonaws.com/1.10.3/2018-07-26/bin/linux/amd64/aws-iam-authenticator
                   - curl -sS -o /tmp/bin/kubectl https://amazon-eks.s3-us-west-2.amazonaws.com/1.10.3/2018-07-26/bin/linux/amd64/kubectl
                   - chmod +x /tmp/bin/kubectl /tmp/bin/aws-iam-authenticator
-                  - export PATH=$PWD/bin:$PATH
+                  - export PATH=/tmp/bin:$PATH
                   - apt-get update && apt-get -y install jq golang python3-pip python3-dev && pip3 install --upgrade awscli
                 pre_build:
                   commands:
@@ -347,6 +347,7 @@ Resources:
                   - export AWS_SECRET_ACCESS_KEY="$(echo $CREDENTIALS | jq -r '.Credentials.SecretAccessKey')"
                   - export AWS_SESSION_TOKEN="$(echo $CREDENTIALS | jq -r '.Credentials.SessionToken')"
                   - export AWS_EXPIRATION=$(echo $CREDENTIALS | jq -r '.Credentials.Expiration')
+                  - aws sts get-caller-identity
                   - aws eks update-kubeconfig --name $EKS_CLUSTER_NAME
                   - /tmp/bin/kubectl get svc
                   - /tmp/bin/kubectl get nodes
