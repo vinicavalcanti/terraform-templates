@@ -183,7 +183,7 @@ Resources:
                      "ClusterName" : "${ClusterName}",
                      "Environment" : "dev"
                   }
-                RoleArn: !GetAtt CFDeployerRole.Arn
+                RoleArn: !GetAtt MasterEKSRole.Arn
 
             ## Deploy Worker Nodes
             - RunOrder: 2
@@ -206,7 +206,7 @@ Resources:
                      "ClusterName" : "${ClusterName}",
                      "Environment" : "dev"
                   }
-                RoleArn: !GetAtt CFDeployerRole.Arn
+                RoleArn: !GetAtt MasterEKSRole.Arn
               OutputArtifacts: []
 
             - RunOrder: 3
@@ -264,11 +264,16 @@ Resources:
             Action:
               - codepipeline:*
               - iam:ListRoles
-              - iam:PassRole
               - s3:ListAllMyBuckets
               - s3:GetBucketLocation
             Resource:
               - "*"
+          - 
+            Effect: Allow
+            Action:
+              - iam:PassRole
+            Resource:
+              - !GetAtt MasterEKSRole.Arn
           -
             Effect: Allow
             Action:
@@ -296,7 +301,7 @@ Resources:
       Roles:
         - !Ref PipeLineRole
 
-  CFDeployerRole:
+  MasterEKSRole:
     Type: AWS::IAM::Role
     Properties:
       AssumeRolePolicyDocument:
@@ -308,21 +313,19 @@ Resources:
               Service:
                 - cloudformation.amazonaws.com
                 - codebuild.amazonaws.com
-                - codepipeline.amazonaws.com
               AWS: !Sub "arn:aws:iam::${AWS::AccountId}:root"
             Action:
               - sts:AssumeRole
       Path: /
 
-  CFDeployerPolicy:
+  EKSMasterDeployerPolicy:
     Type: AWS::IAM::Policy
     Properties:
       PolicyName: cloudformationdeployer-policy
       PolicyDocument:
         Version: 2012-10-17
         Statement:
-          -
-            Effect: Allow
+          - Effect: Allow
             Action:
               - iam:CreateRole
               - iam:DeleteRole
@@ -374,11 +377,10 @@ Resources:
               - !Sub "arn:aws:s3:::${CodepipelineBucket}"
               - !Sub "arn:aws:s3:::${CodepipelineBucket}/*"
       Roles:
-        -
-          !Ref CFDeployerRole
+        - !Ref MasterEKSRole
 
 Outputs:
-    CFDeployerRole:
-      Value: !GetAtt CFDeployerRole.Arn
+    MasterEKSRole:
+      Value: !GetAtt MasterEKSRole.Arn
       Export:
         Name: !Sub "${ClusterName}-master-role"

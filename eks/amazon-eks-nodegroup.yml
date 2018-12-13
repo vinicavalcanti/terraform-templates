@@ -326,7 +326,7 @@ Resources:
             Value: 
               Fn::ImportValue: 
                 !Sub "${ClusterName}-master-role"
-      Name: !Sub "codebuild-worker-join"
+      Name: !Sub "${ClusterName}-codebuild-worker-join"
       ServiceRole: !GetAtt CodeBuildServiceRole.Arn
       Source:
         BuildSpec: !Sub |
@@ -393,10 +393,13 @@ Resources:
           PolicyDocument:
             Version: 2012-10-17
             Statement:
+
               - Effect: Allow
                 Action:
-                  - sts:*
-                Resource: "*"
+                  - sts:AssumeRole
+                Resource: 
+                  Fn::ImportValue: 
+                    !Sub "${ClusterName}-master-role"
 
               - Resource: '*'
                 Effect: Allow
